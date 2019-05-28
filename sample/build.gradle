@@ -57,7 +57,11 @@ android {
 dependencies {
     // If you use this from an external project, use the following instead:
     //   compile 'com.journeyapps:zxing-android-embedded:<version>'
-    implementation project(':zxing-android-embedded-decode-async-support')
+    //api project(':zxing-android-embedded-decode-async-support')  { transitive = true }
+
+    compile(project(':zxing-android-embedded-decode-async-support')) {
+        transitive=true
+    }
 
     // leakcanary is for development purposes only
     // https://github.com/square/leakcanary

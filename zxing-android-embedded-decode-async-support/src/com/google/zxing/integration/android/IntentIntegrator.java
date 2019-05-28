@@ -71,7 +71,6 @@ public class IntentIntegrator {
     public static final String DATA_MATRIX = "DATA_MATRIX";
     public static final String PDF_417 = "PDF_417";
 
-
     public static final Collection<String> PRODUCT_CODE_TYPES = list(UPC_A, UPC_E, EAN_8, EAN_13, RSS_14);
     public static final Collection<String> ONE_D_CODE_TYPES =
             list(UPC_A, UPC_E, EAN_8, EAN_13, RSS_14, CODE_39, CODE_93, CODE_128,

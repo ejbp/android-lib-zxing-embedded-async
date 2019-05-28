@@ -20,5 +20,5 @@ android {
 }
 
 dependencies {
-    implementation(project(':zxing-android-embedded')) { transitive = true }
+    implementation(project(':zxing-android-embedded-decode-async-support')) { transitive = true }
 }

@@ -136,38 +136,66 @@ public class DecoderThread {
         }
     }
 
-    private void decode(SourceData sourceData) {
-        long start = System.currentTimeMillis();
+    private void decode(final SourceData sourceData) {
+        final long start = System.currentTimeMillis();
         Result rawResult = null;
         sourceData.setCropRect(cropRect);
-        LuminanceSource source = createSource(sourceData);
 
-        if(source != null) {
-            rawResult = decoder.decode(source);
+        //ASYNC_DECODE_SUPPORT_CHANGE
+        if ( decoder.isAsync() ) {
+            decoder.decodeAsync(sourceData, new Decoder.AsyncDecodeCallback(){
+                @Override
+                public void onSuccess(Result rawResult) {
+                    long end = System.currentTimeMillis();
+                    Log.d(TAG, "Found barcode in " + (end - start) + " ms");
+
+                    BarcodeResult barcodeResult = new BarcodeResult(rawResult, sourceData);
+                    Message message = Message.obtain(resultHandler, R.id.zxing_decode_succeeded, barcodeResult);
+                    Bundle bundle = new Bundle();
+                    message.setData(bundle);
+                    message.sendToTarget();
+                }
+
+                @Override
+                public void onFailed() {
+                    if (resultHandler != null) {
+                        Message message = Message.obtain(resultHandler, R.id.zxing_decode_failed);
+                        message.sendToTarget();
+                    }
+                }
+            });
+
+        }else {
+            LuminanceSource source = createSource(sourceData);
+            if(source != null) {
+                rawResult = decoder.decode(source);
+            }
+
+            if (rawResult != null) {
+                // Don't log the barcode contents for security.
+                long end = System.currentTimeMillis();
+                Log.d(TAG, "Found barcode in " + (end - start) + " ms");
+                if (resultHandler != null) {
+                    BarcodeResult barcodeResult = new BarcodeResult(rawResult, sourceData);
+                    Message message = Message.obtain(resultHandler, R.id.zxing_decode_succeeded, barcodeResult);
+                    Bundle bundle = new Bundle();
+                    message.setData(bundle);
+                    message.sendToTarget();
+                }
+            } else {
+                if (resultHandler != null) {
+                    Message message = Message.obtain(resultHandler, R.id.zxing_decode_failed);
+                    message.sendToTarget();
+                }
+            }
         }
 
-        if (rawResult != null) {
-            // Don't log the barcode contents for security.
-            long end = System.currentTimeMillis();
-            Log.d(TAG, "Found barcode in " + (end - start) + " ms");
-            if (resultHandler != null) {
-                BarcodeResult barcodeResult = new BarcodeResult(rawResult, sourceData);
-                Message message = Message.obtain(resultHandler, R.id.zxing_decode_succeeded, barcodeResult);
-                Bundle bundle = new Bundle();
-                message.setData(bundle);
-                message.sendToTarget();
-            }
-        } else {
-            if (resultHandler != null) {
-                Message message = Message.obtain(resultHandler, R.id.zxing_decode_failed);
-                message.sendToTarget();
-            }
-        }
         if (resultHandler != null) {
             List<ResultPoint> resultPoints = decoder.getPossibleResultPoints();
             Message message = Message.obtain(resultHandler, R.id.zxing_possible_result_points, resultPoints);
             message.sendToTarget();
         }
+
         requestNextPreview();
     }
 }

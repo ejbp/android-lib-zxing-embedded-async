@@ -17,7 +17,6 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 
-
 public class MainActivity extends AppCompatActivity {
 
     public final int CUSTOMIZED_REQUEST_CODE = 0x0000ffff;
@@ -66,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
         integrator.setBeepEnabled(false);
         integrator.initiateScan();
     }
-
 
     public void scanBarcodeFrontCamera(View view) {
         IntentIntegrator integrator = new IntentIntegrator(this);

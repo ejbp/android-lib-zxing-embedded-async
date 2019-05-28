@@ -138,7 +138,9 @@ public class SourceData {
         // TODO: there should be a way to do this without JPEG compression / decompression cycle.
         YuvImage img = new YuvImage(data, imageFormat, dataWidth, dataHeight, null);
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        img.compressToJpeg(cropRect, 90, buffer);
+
+        //ASYNC_DECODE_SUPPORT_CHANGE 90 => 100
+        img.compressToJpeg(cropRect, 100, buffer);
         byte[] jpegData = buffer.toByteArray();
 
         BitmapFactory.Options options = new BitmapFactory.Options();

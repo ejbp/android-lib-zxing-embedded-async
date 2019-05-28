@@ -1,8 +1,11 @@
 package com.journeyapps.barcodescanner;
 
+import android.os.Handler;
+
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.LuminanceSource;
 import com.google.zxing.MultiFormatReader;
+import com.google.zxing.NotFoundException;
 import com.google.zxing.Reader;
 import com.google.zxing.Result;
 import com.google.zxing.ResultPoint;
@@ -21,6 +24,11 @@ import java.util.List;
  */
 public class Decoder implements ResultPointCallback {
     private Reader reader;
+
+    public interface AsyncDecodeCallback {
+        void onSuccess(Result rawResult);
+        void onFailed();
+    }
 
     /**
      * Create a new Decoder with the specified Reader.
@@ -47,6 +55,34 @@ public class Decoder implements ResultPointCallback {
      */
     public Result decode(LuminanceSource source) {
         return decode(toBitmap(source));
+    }
+
+
+    /**
+     * ASYNC_DECODE_SUPPORT_CHANGE
+     * Given an source, attempt to decode the barcode asynchronous.
+     *
+     * Override this to use a custom binarizer.
+     *
+     * @param source the image source
+     * @param callback callback for response
+     */
+    public void decodeAsync(SourceData source, AsyncDecodeCallback callback) {
+        if ( !isAsync() ) {
+            throw new UnsupportedOperationException("Please change isAsync value on your extended decoder");
+        }
+    }
+
+    /**
+     * ASYNC_DECODE_SUPPORT_CHANGE
+     * Check if this decodder is async
+     *
+     * Override this to use an async decoder.
+     *
+     * @return boolean
+     */
+    public boolean isAsync() {
+        return false;
     }
 
     /**

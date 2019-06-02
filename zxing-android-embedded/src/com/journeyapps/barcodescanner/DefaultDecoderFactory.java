@@ -20,8 +20,6 @@ public class DefaultDecoderFactory implements DecoderFactory {
     public DefaultDecoderFactory() {
     }
 
-
-
     public DefaultDecoderFactory(Collection<BarcodeFormat> decodeFormats) {
         this.decodeFormats = decodeFormats;
     }

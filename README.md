@@ -1,3 +1,35 @@
+# Diff from the original on this build
+
+This build is to use when you need to have async decoding. For example, when the decoder success depends on a web service.
+
+To proceed with async decoding: 
+
+(Before you proceed I suggest you to read online about how to implement your own decoder factory)
+
+
+1. Create you own custom decoder factory and make it return your custom decoder on the method `createDecoder(Map<DecodeHintType, ?> baseHints)`. You need to add it to the barcodeView: 
+
+    ```
+        barcodeView.getBarcodeView().setDecoderFactory(new CustomDecoderFactory());
+    ```
+
+2. Your custom decoder should extends the **com.journeyapps.barcodescanner.Decoder** class and override the method:
+
+    ```
+    @Override
+    public boolean isAsync() {
+        return true; //return true to let know DecodingThread that this decoder is async
+    }
+    ```
+
+3. At this moment, the DecoderThread knows that the decoder is async. It will call the method **decodeAsync(SourceData source, AsyncDecodeCallback callback)** on each frame, so override it and implement your own logic.
+
+
+
+
+
+
+
 # ZXing Android Embedded
 
 Barcode scanning library for Android, using [ZXing][2] for decoding.

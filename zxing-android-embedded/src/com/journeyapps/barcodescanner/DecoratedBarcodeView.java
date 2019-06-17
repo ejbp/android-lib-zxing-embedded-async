@@ -135,6 +135,10 @@ public class DecoratedBarcodeView extends FrameLayout {
 
         CameraSettings settings = new CameraSettings();
 
+        //ASYNC_DECODE_SUPPORT_CHANGE Noticed Better performance with both of this options enabled
+        settings.setAutoFocusEnabled(true);
+        settings.setExposureEnabled(true);
+
         if (intent.hasExtra(Intents.Scan.CAMERA_ID)) {
             int cameraId = intent.getIntExtra(Intents.Scan.CAMERA_ID, -1);
             if (cameraId >= 0) {
